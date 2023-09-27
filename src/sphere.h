@@ -1,7 +1,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "rtweekend.h"
+#include "utils.h"
 
 #include "hittable.h"
 
@@ -21,7 +21,7 @@ class sphere : public hittable {
         if (discriminant < 0)
             return false;
 
-        // Find the nearest root that lies in the acceptable range.
+        // 找到位于可接受范围内的最近的解
         auto sqrtd = sqrt(discriminant);
         auto root = (-half_b - sqrtd) / a;
         if (!ray_t.surrounds(root)) {

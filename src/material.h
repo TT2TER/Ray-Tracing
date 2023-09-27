@@ -1,7 +1,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "rtweekend.h"
+#include "utils.h"
 
 #include "hittable_list.h"
 
@@ -24,7 +24,7 @@ class lambertian : public material {
     const override {
         auto scatter_direction = rec.normal + random_unit_vector();
 
-        // Catch degenerate scatter direction
+        // 检测散射方向是否有效 随机单位向量与法向量抵消则为无效
         if (scatter_direction.near_zero())
             scatter_direction = rec.normal;
 
@@ -82,10 +82,10 @@ class dielectric : public material {
     }
 
   private:
-    double ir; // Index of Refraction
+    double ir; // 折射率
 
     static double reflectance(double cosine, double ref_idx) {
-        // Use Schlick's approximation for reflectance.
+        // 使用施利克近似法计算反射率
         auto r0 = (1-ref_idx) / (1+ref_idx);
         r0 = r0*r0;
         return r0 + (1-r0)*pow((1 - cosine),5);
