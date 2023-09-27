@@ -8,6 +8,8 @@
 #include "material.h"
 
 #include <iostream>
+#include <future>
+#include <vector>
 
 
 class camera {
@@ -29,14 +31,21 @@ class camera {
         initialize();
 
         std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+        std::vector<std::future<color>> futures;
 
         for (int j = 0; j < image_height; ++j) {
             std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; ++i) {
-                color pixel_color(0,0,0);
+                futures.clear();
                 for (int sample = 0; sample < samples_per_pixel; ++sample) {
-                    ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, max_depth, world);
+                    futures.push_back(std::async(std::launch::async, [this, i, j, &world] {
+                        ray r = get_ray(i, j);
+                        return ray_color(r, max_depth, world);
+                    }));
+                }
+                color pixel_color(0, 0, 0);
+                for (auto& future : futures) {
+                    pixel_color += future.get();
                 }
                 write_color(std::cout, pixel_color, samples_per_pixel);
             }
@@ -126,16 +135,16 @@ class camera {
         color result(1.0, 1.0, 1.0);
         ray current_ray = r;
         for (int depth = 0; depth < max_depth; ++depth) {
-        hit_record rec;
+            hit_record rec;
             if (world.hit(current_ray, interval(0.001, infinity), rec)) {
-            ray scattered;
-            color attenuation;
+                ray scattered;
+                color attenuation;
                 if (rec.mat->scatter(current_ray, rec, attenuation, scattered)) {
                     current_ray = scattered;
                     result *= attenuation;
                 } else { // 仅出现在金属材质中
                     return color(0, 0, 0);
-        }
+                }
             } else { //没有反射则取默认背景色
                 vec3 unit_direction = unit_vector(current_ray.direction());
                 auto a = 0.5 * (unit_direction.y() + 1.0);
