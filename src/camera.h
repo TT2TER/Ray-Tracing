@@ -122,24 +122,28 @@ class camera {
         return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
     }
 
-    color ray_color(const ray& r, int depth, const hittable& world) const {
-        // 如果我们超出了光线反弹限制，则不再聚集光线
-        if (depth <= 0)
-            return color(0,0,0);
-
+    color ray_color(const ray& r, int max_depth, const hittable& world) const {
+        color result(1.0, 1.0, 1.0);
+        ray current_ray = r;
+        for (int depth = 0; depth < max_depth; ++depth) {
         hit_record rec;
-
-        if (world.hit(r, interval(0.001, infinity), rec)) {
+            if (world.hit(current_ray, interval(0.001, infinity), rec)) {
             ray scattered;
             color attenuation;
-            if (rec.mat->scatter(r, rec, attenuation, scattered))
-                return attenuation * ray_color(scattered, depth-1, world);
-            return color(0,0,0);
+                if (rec.mat->scatter(current_ray, rec, attenuation, scattered)) {
+                    current_ray = scattered;
+                    result *= attenuation;
+                } else { // 仅出现在金属材质中
+                    return color(0, 0, 0);
         }
-
-        vec3 unit_direction = unit_vector(r.direction());
-        auto a = 0.5*(unit_direction.y() + 1.0);
-        return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+            } else { //没有反射则取默认背景色
+                vec3 unit_direction = unit_vector(current_ray.direction());
+                auto a = 0.5 * (unit_direction.y() + 1.0);
+                result *= (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+                break; // 直接返回
+            }
+        }
+        return result;
     }
 };
 
