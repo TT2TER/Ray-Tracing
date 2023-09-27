@@ -1,7 +1,7 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "rtweekend.h"
+#include "utils.h"
 
 class material;
 
@@ -15,8 +15,8 @@ class hit_record {
     bool front_face;
 
     void set_face_normal(const ray& r, const vec3& outward_normal) {
-        // Sets the hit record normal vector.
-        // NOTE: the parameter `outward_normal` is assumed to have unit length.
+        // 设置命中记录的法向量
+        // 注意：参数 `outward_normal` 假定为单位长度
 
         front_face = dot(r.direction(), outward_normal) < 0;
         normal = front_face ? outward_normal : -outward_normal;

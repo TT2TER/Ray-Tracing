@@ -34,10 +34,12 @@
 # CMake build artifacts
 build/
 CMakeFiles/
+CMakeSettings.json
 
 # Visual Studio Code generated files
 .vscode/
 
+.vs/
 *.vcxproj
 *.vcxproj.filters
 *.cmake

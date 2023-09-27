@@ -5,7 +5,7 @@ class interval {
   public:
     double min, max;
 
-    interval() : min(+infinity), max(-infinity) {} // Default interval is empty
+    interval() : min(+infinity), max(-infinity) {} // 默认区间为空
 
     interval(double _min, double _max) : min(_min), max(_max) {}
 
