@@ -47,3 +47,4 @@ CMakeFiles/
 *.vcxproj.user.*
 *.vcproj
 *.vcproj.*
+*test*.cpp
