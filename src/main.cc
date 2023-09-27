@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <time.h>
 
 #include "camera.h"
 #include "color.h"
@@ -8,6 +9,7 @@
 
 
 int main() {
+    clock_t start=clock(), stop;
     hittable_list world;
 
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
@@ -70,4 +72,6 @@ int main() {
     cam.focus_dist    = 10.0;
 
     cam.render(world);
+    stop=clock();
+    std::clog << "Time: " << (double)(stop-start)/CLOCKS_PER_SEC << "s";
 }
