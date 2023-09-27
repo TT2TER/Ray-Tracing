@@ -49,3 +49,4 @@ CMakeSettings.json
 *.vcxproj.user.*
 *.vcproj
 *.vcproj.*
+*test*.cpp
