@@ -1,4 +1,4 @@
-#ifndef SPHERE_H
+﻿#ifndef SPHERE_H
 #define SPHERE_H
 
 #include "utils.h"

@@ -1,4 +1,4 @@
-#ifndef INTERVAL_H
+﻿#ifndef INTERVAL_H
 #define INTERVAL_H
 
 class interval {
