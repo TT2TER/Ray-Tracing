@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
-Project(CUDA_RayTracing CXX)
+Project(CUDA_RayTracing LANGUAGES CXX CUDA)
 include_directories(./src)
-add_executable(main src/main.cc)
+add_executable(main ./src/main.cu)
+set_target_properties(main PROPERTIES CUDA_ARCHITECTURES "86")

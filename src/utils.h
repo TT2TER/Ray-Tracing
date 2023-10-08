@@ -5,33 +5,35 @@
 #include <cstdlib>
 #include <limits>
 #include <memory>
-
+#include <random>
+#include <cuda_runtime.h>
 
 // 引入std成员函数
 
-using std::shared_ptr;
 using std::make_shared;
+using std::shared_ptr;
 using std::sqrt;
 
 // 常量
 
-const double infinity = std::numeric_limits<double>::infinity();
-const double pi = 3.1415926535897932385;
+__device__ const float infinity = std::numeric_limits<float>::infinity();
+__device__ const float pi = 3.1415926535897932385f;
 
 // 常用函数
 
-inline double degrees_to_radians(double degrees) {
-    return degrees * pi / 180.0;
+inline float degrees_to_radians(float degrees)
+{
+    return degrees * pi / 180.0f;
 }
 
-inline double random_double() {
-    // 返回 [0,1) 中的随机实数
-    return rand() / (RAND_MAX + 1.0);
+__device__ inline float random_double(curandState *state)
+{
+    return curand_uniform(state);
 }
 
-inline double random_double(double min, double max) {
-    // 返回 [min,max) 中的随机实数
-    return min + (max-min)*random_double();
+__device__ inline float random_double(float min, float max, curandState *state)
+{
+    return min + (max - min) * curand_uniform(state);
 }
 
 // 常用头文件
@@ -39,6 +41,5 @@ inline double random_double(double min, double max) {
 #include "interval.h"
 #include "ray.h"
 #include "vec3.h"
-
 
 #endif

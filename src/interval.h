@@ -1,42 +1,32 @@
 ﻿#ifndef INTERVAL_H
 #define INTERVAL_H
 
-class interval {
-  public:
-    double min, max;
+class interval
+{
+public:
+    float min, max;
 
-    interval() : min(+infinity), max(-infinity) {} // 默认区间为空
+    __host__ __device__ interval() : min(+infinity), max(-infinity) {} // 默认区间为空
 
-    interval(double _min, double _max) : min(_min), max(_max) {}
+    __host__ __device__ interval(float _min, float _max) : min(_min), max(_max) {}
 
-    double size() const {
-        return max - min;
-    }
+    __host__ __device__ bool contains(float x) const { return min <= x && x <= max; }
 
-    interval expand(double delta) const {
-        auto padding = delta/2;
-        return interval(min - padding, max + padding);
-    }
+    __host__ __device__ bool surrounds(float x) const { return min < x && x < max; }
 
-    bool contains(double x) const {
-        return min <= x && x <= max;
-    }
-
-    bool surrounds(double x) const {
-        return min < x && x < max;
-    }
-
-    double clamp(double x) const {
-        if (x < min) return min;
-        if (x > max) return max;
+    __host__ __device__ float clamp(float x) const
+    {
+        if (x < min)
+            return min;
+        if (x > max)
+            return max;
         return x;
     }
 
     static const interval empty, universe;
 };
 
-const interval interval::empty    = interval(+infinity, -infinity);
-const interval interval::universe = interval(-infinity, +infinity);
-
+const static interval empty(+infinity, -infinity);
+const static interval universe(-infinity, +infinity);
 
 #endif
