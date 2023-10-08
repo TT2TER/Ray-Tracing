@@ -1,17 +1,4 @@
-﻿// #include "utils.h"
-// #include <time.h>
-// #include <float.h>
-// #include <iostream>
-// #include <curand_kernel.h>
-// #include "camera.h"
-// #include "color.h"
-// #include "hittable_list.h"
-// #include "material.h"
-// #include "sphere.h"
-// #include "interval.h"
-// #include "ray.h"
-// #include "vec3.h"
-#include <float.h>
+﻿#include <float.h>
 #include <iostream>
 #include <curand_kernel.h>
 #include <time.h>
@@ -123,8 +110,8 @@ int main()
     camera cam;
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 800;
-    cam.samples_per_pixel = 10;
-    cam.max_depth = 20;
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
 
     cam.vfov = 20;
     cam.lookfrom = point3(13, 2, 3);
