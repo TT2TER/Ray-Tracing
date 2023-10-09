@@ -86,6 +86,15 @@ __global__ void free_world(hittable_list **world)
 
 int main()
 {
+    camera cam;
+    std::clog << "Enter image width: ";
+    std::cin >> cam.image_width;
+
+    std::clog << "Enter samples per pixel: ";
+    std::cin >> cam.samples_per_pixel;
+
+    std::clog << "Enter max depth: ";
+    std::cin >> cam.max_depth;
     clock_t start = clock(), stop;
 
     hittable_list **d_world = nullptr;
@@ -107,11 +116,11 @@ int main()
     checkCudaErrors(cudaDeviceSynchronize());
 
     /* 设置相机和输出图像的属性 */
-    camera cam;
+    // camera cam;
     cam.aspect_ratio = 16.0 / 9.0;
-    cam.image_width = 800;
-    cam.samples_per_pixel = 100;
-    cam.max_depth = 50;
+    // cam.image_width = 800;
+    // cam.samples_per_pixel = 100;
+    // cam.max_depth = 50;
 
     cam.vfov = 20;
     cam.lookfrom = point3(13, 2, 3);
