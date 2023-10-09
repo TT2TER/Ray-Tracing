@@ -1,4 +1,4 @@
-#ifndef CAMERA_H
+﻿#ifndef CAMERA_H
 #define CAMERA_H
 
 #include "utils.h"
@@ -8,7 +8,7 @@
 #include "material.h"
 
 #include <iostream>
-#include <future>
+#include <thread>
 #include <vector>
 
 
@@ -31,27 +31,39 @@ class camera {
         initialize();
 
         std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-        std::vector<std::future<color>> futures;
+        const int num_threads = std::thread::hardware_concurrency();
+        std::vector<std::thread> threads;
+        const int num_pixels = image_width * image_height;
+        color* pixel_buffer = new color[num_pixels];
+
+        for (int t = 0; t < num_threads; ++t) {
+            threads.emplace_back([this, t, num_threads, &world, pixel_buffer]() {
+                for (int j = t; j < image_height; j += num_threads) {
+                    for (int i = 0; i < image_width; ++i) {
+                        color pixel_color(0, 0, 0);
+                        for (int sample = 0; sample < samples_per_pixel; ++sample) {
+                            ray r = get_ray(i, j);
+                            pixel_color += ray_color(r, max_depth, world);
+                        }
+
+                        int index = j * image_width + i;
+                        pixel_buffer[index] = pixel_color;
+                    }
+                }
+            });
+        }
+
+        for (auto& thread : threads) {
+            thread.join();
+        }
 
         for (int j = 0; j < image_height; ++j) {
-            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; ++i) {
-                futures.clear();
-                for (int sample = 0; sample < samples_per_pixel; ++sample) {
-                    futures.push_back(std::async(std::launch::async, [this, i, j, &world] {
-                        ray r = get_ray(i, j);
-                        return ray_color(r, max_depth, world);
-                    }));
-                }
-                color pixel_color(0, 0, 0);
-                for (auto& future : futures) {
-                    pixel_color += future.get();
-                }
-                write_color(std::cout, pixel_color, samples_per_pixel);
+                int index = j * image_width + i;
+                write_color(std::cout, pixel_buffer[index], samples_per_pixel);
             }
         }
 
-        std::clog << "\rDone.                 \n";
     }
 
   private:
