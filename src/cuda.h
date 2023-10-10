@@ -62,7 +62,7 @@ __global__ void initRandState(curandState *d_rand_state, int n)
     // 参数2：序列号，用于初始化生成器
     // 参数3：偏移量，用于初始化生成器
     // 参数4：指向当前线程状态的指针
-    curand_init(1984, id, 0, &d_rand_state[id]);
+    curand_init(2077, id, 0, &d_rand_state[id]);
 }
 
 // 在CUDA核函数中，每个线程都会调用此函数以初始化其随机数生成器状态

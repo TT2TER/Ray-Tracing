@@ -17,7 +17,7 @@ __global__ void create_world(hittable_list **world, curandState *rand_state)
     int id = getThreadId();
     if (id > 0)
         return;
-    curand_init(1984, id, 0, rand_state);
+    curand_init(2077, id, 0, rand_state);
 
     *world = new hittable_list();
 

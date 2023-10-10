@@ -150,7 +150,7 @@ __device__ ray get_ray(int i, int j, curandState *rand_state,
  * 此函数计算每个像素的颜色，考虑了光线追踪、散焦和反射等效果。
  * 计算结果将写入帧缓冲中，用于最终图像的渲染。
  */
-__global__ void render_kernal(vec3 *fb, hittable_list **world, int max_depth,
+__global__ void render_kernel(vec3 *fb, hittable_list **world, int max_depth,
                               int image_width, int image_height,
                               int samples_per_pixel, vec3 center,
                               vec3 pixel00_loc, float defocus_angle,
@@ -222,7 +222,7 @@ public:
         dim3 grid_size((n + 127) / 128);
         dim3 block_size(128);
 
-        render_kernal<<<grid_size, block_size>>>(
+        render_kernel<<<grid_size, block_size>>>(
             fb, world, max_depth, image_width, image_height, samples_per_pixel,
             center, pixel00_loc, defocus_angle, pixel_delta_u, pixel_delta_v,
             defocus_disk_u, defocus_disk_v, d_rand_state, n);
